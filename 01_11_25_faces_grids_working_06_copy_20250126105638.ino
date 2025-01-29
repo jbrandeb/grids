@@ -17,8 +17,8 @@
 #define DATA_PIN5 11        // USER 1 Face
 
 // Potentiometer pins
-#define POT_PIN1 22
-#define POT_PIN2 21
+#define POT_PIN1 A0
+#define POT_PIN2 A1
 
 // Button pins
 #define BUTTON_PIN1 2        // RESTART Grid 01 Timer - User 01
@@ -48,7 +48,6 @@ const unsigned long ledStripRunTime = 10000; // 30 seconds for Strip 4 and 5
 
 const unsigned long debounceDelay = 50; // Debounce delay
 
-
 // Debounce variables
 unsigned long lastDebounceTime1 = 0;
 unsigned long lastDebounceTime2 = 0;
@@ -75,15 +74,13 @@ uint8_t fadeVal4 = 225; // FADEVALUE for LED strip 4
 uint8_t fadeVal5 = 225; // FADEVALUE for LED strip 5
 
 // Function declarations
-void turnOnLEDs4();
 void turnOffLEDs4();
-void turnOnLEDs5();
 void turnOffLEDs5();
 void animateStrip4();
 void animateStrip5();
 
 void setup() {
-    Serial.begin(57600);
+    Serial.begin(115200);
     FastLED.addLeds<WS2812B, DATA_PIN1, GRB>(leds1, NUM_LEDS1);
     FastLED.addLeds<WS2812B, DATA_PIN2, GRB>(leds2, NUM_LEDS2);
     FastLED.addLeds<WS2812B, DATA_PIN3, GRB>(leds3, NUM_LEDS3);
@@ -112,6 +109,7 @@ void setup() {
 
     // Blink both LED strips on and off once at startup
     blinkLEDs();
+    delay(2000);
 }
 
 void fadeall(CRGB* leds, uint8_t fadeVal, int numLeds) {
@@ -180,7 +178,6 @@ void animateStrip3() {
     static uint8_t hue3 = 32; // Start with orange hue
     static int index3 = 0;
     static int direction3 = 1;
-    
 
     leds3[index3] = CHSV(hue3, 255, 255);
     hue3 += 1; // Increment hue
@@ -206,13 +203,15 @@ void animateStrip3() {
 }
 
 void animateStrip4() {
+    static uint8_t hue4 = 0; // Start with red hue
     static int index4 = 0;
     static int direction4 = 1;
 
-    // Set the color to full red and brightness to 250
-    leds4[index4] = CRGB::Red;
-    leds4[index4].nscale8(250); // Set brightness to 250
-
+    leds4[index4] = CHSV(hue4, 255, 255);
+    hue4 += 1;
+    if (hue4 > 255) {
+        hue4 = 0;
+    }
     FastLED.show();
     fadeall(leds4, fadeVal4, NUM_LEDS4);
 
@@ -382,33 +381,60 @@ void loop() {
     }
 }
 
-// Function to blink both LED strips once at startup
+// Function to blink all five LED strips once at startup
 void blinkLEDs() {
-    turnOnLEDs4();
-    turnOnLEDs5();
-    delay(500);
+    for (int i = 0; i < NUM_LEDS1; i++) {
+        animateStrip1();
+        delay(10);
+    }
+    for (int i = 0; i < NUM_LEDS2; i++) {
+        animateStrip2();
+        delay(10);
+    }
+    for (int i = 0; i < NUM_LEDS3; i++) {
+        animateStrip3();
+        delay(10);
+    }for (int i = 0; i < NUM_LEDS4; i++) {
+        animateStrip4();
+        delay(10);
+    }
+    for (int i = 0; i < NUM_LEDS5; i++) {
+        animateStrip5();
+        delay(10);
+    }
+    delay(100);
+
     turnOffLEDs4();
     turnOffLEDs5();
 }
 
-// Function to turn on the LEDs for strip 4
-void turnOnLEDs4() {
-    animateStrip4();
+// Function to turn off the LEDs for strip 1
+void turnOffLEDs1() {
+    fill_solid(leds1, NUM_LEDS1, CRGB::Black);
+    FastLED.show();
+}
+
+// Function to turn off the LEDs for strip 2
+void turnOffLEDs2() {
+    fill_solid(leds2, NUM_LEDS2, CRGB::Black);
+    FastLED.show();
+}
+
+// Function to turn off the LEDs for strip 3
+void turnOffLEDs3() {
+    fill_solid(leds3, NUM_LEDS1, CRGB::Black);
+    FastLED.show();
 }
 
 // Function to turn off the LEDs for strip 4
 void turnOffLEDs4() {
-    leds4.fill_solid(CRGB::Black);
+    fill_solid(leds4, NUM_LEDS1, CRGB::Black);
     FastLED.show();
-}
-
-// Function to turn on the LEDs for strip 5
-void turnOnLEDs5() {
-    animateStrip5();
 }
 
 // Function to turn off the LEDs for strip 5
 void turnOffLEDs5() {
-    leds5.fill_solid(CRGB::Black);
+    fill_solid(leds5, NUM_LEDS1, CRGB::Black);
     FastLED.show();
 }
+
