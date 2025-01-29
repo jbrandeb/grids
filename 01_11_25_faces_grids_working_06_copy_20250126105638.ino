@@ -52,7 +52,6 @@ const unsigned long ledStripRunTime = 10000; // 30 seconds for Strip 4 and 5
 
 const unsigned long debounceDelay = 50; // Debounce delay
 
-
 // Debounce variables
 unsigned long lastDebounceTime1 = 0;
 unsigned long lastDebounceTime2 = 0;
@@ -183,7 +182,7 @@ void animateStrip3() {
     static uint8_t hue3 = 32; // Start with orange hue
     static int index3 = 0;
     static int direction3 = 1;
-    
+
     leds3[index3] = CHSV(hue3, 255, 255);
     hue3 += 1; // Increment hue
     if (hue3 > 64) { // Limit hue to orange to yellow range (32-64)
@@ -394,28 +393,28 @@ void loop() {
 void blinkLEDs() {
     for (int i = 0; i < NUM_LEDS1; i++) {
         animateStrip1();
-        delay(5);  
+        delay(5);
     }
     for (int i = 0; i < NUM_LEDS2; i++) {
         animateStrip2();
-        delay(5);  
+        delay(5);
     }
     for (int i = 0; i < NUM_LEDS3; i++) {
         animateStrip3();
-        delay(5);  
+        delay(5);
     }for (int i = 0; i < NUM_LEDS4; i++) {
         animateStrip4();
-        delay(5);  
+        delay(5);
     }
     for (int i = 0; i < NUM_LEDS5; i++) {
         animateStrip5();
-        delay(5);  
+        delay(5);
     }
     delay(100);
 
     turnOffLEDs1();
     turnOffLEDs2();
-    turnOffLEDs3();    
+    turnOffLEDs3();
     turnOffLEDs4();
     turnOffLEDs5();
 }
