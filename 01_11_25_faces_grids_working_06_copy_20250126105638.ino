@@ -1,3 +1,7 @@
+// License: MIT
+// Copyright (c) 2025 Andy Batt
+// Copyright (c) 2025 Jesse Brandeburg
+
 #include "FastLED.h"
 
 // LED configuration
@@ -42,11 +46,12 @@ unsigned long ledOnTime4 = 0;
 unsigned long ledOnTime5 = 0;
 
 const unsigned long initialRunTime = 5000; // 5 seconds for initial run
-const unsigned long buttonRunTime = 20000; // 10 seconds for Strip 1 and 2
-const unsigned long strip3RunTime = 2500; // 20 seconds for Strip 3
+const unsigned long buttonRunTime = 10000; // 10 seconds for Strip 1 and 2
+const unsigned long strip3RunTime = 3000; // 3 seconds for Strip 3
 const unsigned long ledStripRunTime = 10000; // 30 seconds for Strip 4 and 5
 
 const unsigned long debounceDelay = 50; // Debounce delay
+
 
 // Debounce variables
 unsigned long lastDebounceTime1 = 0;
@@ -178,7 +183,7 @@ void animateStrip3() {
     static uint8_t hue3 = 32; // Start with orange hue
     static int index3 = 0;
     static int direction3 = 1;
-
+    
     leds3[index3] = CHSV(hue3, 255, 255);
     hue3 += 1; // Increment hue
     if (hue3 > 64) { // Limit hue to orange to yellow range (32-64)
@@ -269,6 +274,7 @@ void loop() {
     // Debounce Button 1
     bool reading1 = digitalRead(BUTTON_PIN1);
     if (reading1 != lastButtonState1) {
+        Serial.println("Button 1 pressed");
         lastDebounceTime1 = currentTime;
     }
     if ((currentTime - lastDebounceTime1) > debounceDelay) {
@@ -284,6 +290,7 @@ void loop() {
     // Debounce Button 2
     bool reading2 = digitalRead(BUTTON_PIN2);
     if (reading2 != lastButtonState2) {
+        Serial.println("Button 2 pressed");
         lastDebounceTime2 = currentTime;
     }
     if ((currentTime - lastDebounceTime2) > debounceDelay) {
@@ -296,9 +303,10 @@ void loop() {
     }
     lastButtonState2 = reading2;
 
-    // Debounce Button 4
+        // Debounce Button 4
     bool reading4 = digitalRead(BUTTON_PIN4);
     if (reading4 != lastButtonState4) {
+        Serial.println("Button 4 pressed");
         lastDebounceTime4 = currentTime;
     }
     if ((currentTime - lastDebounceTime4) > debounceDelay) {
@@ -317,6 +325,7 @@ void loop() {
     // Debounce Button 5
     bool reading5 = digitalRead(BUTTON_PIN5);
     if (reading5 != lastButtonState5) {
+        Serial.println("Button 5 pressed");
         lastDebounceTime5 = currentTime;
     }
     if ((currentTime - lastDebounceTime5) > debounceDelay) {
@@ -385,25 +394,28 @@ void loop() {
 void blinkLEDs() {
     for (int i = 0; i < NUM_LEDS1; i++) {
         animateStrip1();
-        delay(10);
+        delay(5);  
     }
     for (int i = 0; i < NUM_LEDS2; i++) {
         animateStrip2();
-        delay(10);
+        delay(5);  
     }
     for (int i = 0; i < NUM_LEDS3; i++) {
         animateStrip3();
-        delay(10);
+        delay(5);  
     }for (int i = 0; i < NUM_LEDS4; i++) {
         animateStrip4();
-        delay(10);
+        delay(5);  
     }
     for (int i = 0; i < NUM_LEDS5; i++) {
         animateStrip5();
-        delay(10);
+        delay(5);  
     }
     delay(100);
 
+    turnOffLEDs1();
+    turnOffLEDs2();
+    turnOffLEDs3();    
     turnOffLEDs4();
     turnOffLEDs5();
 }
@@ -422,19 +434,18 @@ void turnOffLEDs2() {
 
 // Function to turn off the LEDs for strip 3
 void turnOffLEDs3() {
-    fill_solid(leds3, NUM_LEDS1, CRGB::Black);
+    fill_solid(leds3, NUM_LEDS3, CRGB::Black);
     FastLED.show();
 }
 
 // Function to turn off the LEDs for strip 4
 void turnOffLEDs4() {
-    fill_solid(leds4, NUM_LEDS1, CRGB::Black);
+    fill_solid(leds4, NUM_LEDS4, CRGB::Black);
     FastLED.show();
 }
 
 // Function to turn off the LEDs for strip 5
 void turnOffLEDs5() {
-    fill_solid(leds5, NUM_LEDS1, CRGB::Black);
+    fill_solid(leds5, NUM_LEDS5, CRGB::Black);
     FastLED.show();
 }
-
